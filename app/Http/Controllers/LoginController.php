@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataMappers\User\UserMapperInterface;
 use App\Exceptions\ModelNotFoundException;
+use App\Models\UserInterface;
 use App\Utils\Jwt\UserTokenFactoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -47,6 +48,23 @@ class LoginController extends Controller
 
         $user = $this->userMapper->findByNickname($data['nickname']);
 
+       $this->performAdditionalValidation($user, $data);
+
+        $token = $this->tokenFactory->create($user);
+
+        return response()->json([
+            'token' => $token->__toString(),
+            'expires_in' => $this->tokenFactory->getExpiresIn(),
+        ]);
+    }
+
+    /**
+     * @param UserInterface $user
+     * @param array $data
+     */
+    private function performAdditionalValidation(UserInterface $user, array $data): void
+    {
+
         if (!$user) {
             ValidationException::withMessages([
                 'nickname' => 'user with nickname ' . $data['nickname'] . ' was not found',
@@ -58,12 +76,5 @@ class LoginController extends Controller
                 'password' => 'passwordInvalid',
             ]);
         }
-
-        $token = $this->tokenFactory->create($user);
-
-        return response()->json([
-            'token' => $token->__toString(),
-            'expires_in' => $this->tokenFactory->getExpiresIn(),
-        ]);
     }
 }

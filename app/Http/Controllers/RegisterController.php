@@ -41,10 +41,24 @@ class RegisterController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
+        $this->checkNickname($data['nickname']);
+
         $data['password'] = Hash::make($data['password']);
 
         $user = $this->userMapper->create(new User($data));
 
         return response()->json($user->toArray());
+    }
+
+    /**
+     * @param string $nickname
+     */
+    private function checkNickname(string $nickname): void
+    {
+        if ($this->userMapper->findByNickname($nickname)) {
+            throw ValidationException::withMessages([
+                'nickname' => 'given nickname is already taken',
+            ]);
+        }
     }
 }
