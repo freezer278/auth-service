@@ -3,7 +3,10 @@
 
 namespace App\Utils\Jwt;
 
+use App\DataMappers\Token\TokenMapperInterface;
+use App\Models\Token as TokenModel;
 use App\Models\UserInterface;
+use Illuminate\Support\Str;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key;
@@ -15,14 +18,25 @@ class UserTokenFactory implements UserTokenFactoryInterface
      * @var Sha256
      */
     private $signer;
+    /**
+     * @var TokenMapperInterface
+     */
+    private $tokenMapper;
+    /**
+     * @var Builder
+     */
+    private $builder;
 
     /**
      * UserTokenFactory constructor.
      * @param Sha256 $signer
+     * @param TokenMapperInterface $tokenMapper
      */
-    public function __construct(Sha256 $signer)
+    public function __construct(Sha256 $signer, TokenMapperInterface $tokenMapper, Builder $builder)
     {
         $this->signer = $signer;
+        $this->tokenMapper = $tokenMapper;
+        $this->builder = $builder;
     }
 
     /**
@@ -32,16 +46,25 @@ class UserTokenFactory implements UserTokenFactoryInterface
     public function create(UserInterface $user)
     {
         $time = time();
+        $expiresAt = $time + $this->getExpiresIn();
+        $id = $this->getNewTokenId();
 
-        return (new Builder())
+        $token = $this->builder
             ->issuedBy(url('/'))
             ->permittedFor(url('/'))
-            ->identifiedBy($this->getNewTokenId(), true)
+            ->identifiedBy($id, true)
             ->issuedAt($time)
             ->canOnlyBeUsedAfter($time + 60)
-            ->expiresAt($time + $this->getExpiresIn())
+            ->expiresAt($expiresAt)
             ->withClaim('sub', $user->getId())
             ->getToken($this->signer, new Key($this->getSignKey()));
+
+        $this->tokenMapper->create(new TokenModel([
+            'id' => $id,
+            'expires_at' => $expiresAt,
+        ]));
+
+        return $token;
     }
 
     /**
@@ -57,8 +80,11 @@ class UserTokenFactory implements UserTokenFactoryInterface
      */
     private function getNewTokenId(): string
     {
-        //            Todo: add here unique identifier
-        return '4f1g23a12aa';
+        do {
+            $id = Str::random(32);
+        } while ($this->tokenMapper->findById($id));
+
+        return $id;
     }
 
     /**

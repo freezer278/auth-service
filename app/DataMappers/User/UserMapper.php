@@ -28,33 +28,23 @@ class UserMapper implements UserMapperInterface
     /**
      * @param int $id
      * @return UserInterface
-     * @throws ModelNotFoundException
      */
-    public function findById(int $id): UserInterface
+    public function findById(int $id): ?UserInterface
     {
         $result = $this->database->findByField('id', $id);
 
-        if (!$result) {
-            throw new ModelNotFoundException();
-        }
-
-        return $this->mapSingleEntity($result);
+        return $result ? $this->mapSingleEntity($result) : null;
     }
 
     /**
      * @param string $nickname
      * @return UserInterface
-     * @throws ModelNotFoundException
      */
-    public function findByNickname(string $nickname): UserInterface
+    public function findByNickname(string $nickname): ?UserInterface
     {
         $result = $this->database->findByField('nickname', $nickname);
 
-        if (!$result) {
-            throw new ModelNotFoundException();
-        }
-
-        return $this->mapSingleEntity($result);
+        return $result ? $this->mapSingleEntity($result) : null;
     }
 
     /**

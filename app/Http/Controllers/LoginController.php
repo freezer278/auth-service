@@ -59,8 +59,10 @@ class LoginController extends Controller
             ]);
         }
 
+        $token = $this->tokenFactory->create($user);
+
         return response()->json([
-            'token' => $this->tokenFactory->create($user),
+            'token' => $token->__toString(),
             'expires_in' => $this->tokenFactory->getExpiresIn(),
         ]);
     }

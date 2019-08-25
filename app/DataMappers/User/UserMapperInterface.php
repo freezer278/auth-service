@@ -11,16 +11,14 @@ interface UserMapperInterface
     /**
      * @param int $id
      * @return UserInterface
-     * @throws ModelNotFoundException
      */
-    public function findById(int $id): UserInterface;
+    public function findById(int $id): ?UserInterface;
 
     /**
      * @param string $nickname
      * @return UserInterface
-     * @throws ModelNotFoundException
      */
-    public function findByNickname(string $nickname): UserInterface;
+    public function findByNickname(string $nickname): ?UserInterface;
 
     /**
      * @param UserInterface $user

@@ -5,12 +5,13 @@ namespace App\Utils\Jwt;
 
 
 use App\Models\UserInterface;
+use Lcobucci\JWT\Token;
 
 interface UserTokenFactoryInterface
 {
     /**
      * @param UserInterface $user
-     * @return mixed
+     * @return Token
      */
     public function create(UserInterface $user);
 
