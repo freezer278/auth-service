@@ -11,13 +11,10 @@ Also track events to external analytic service.
 - make sure that **8000** port in **127.0.0.1** interface is free
 - in the project dir run the next commands:
 ```bash
+cp .env.example .env
+composer install
 docker-compose up -d
 open http://localhost:8000
-```
-
-### Install vendors
-```bash
-composer install
 ```
 
 
