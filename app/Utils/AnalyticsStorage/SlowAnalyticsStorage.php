@@ -3,6 +3,7 @@
 
 namespace App\Utils\AnalyticsStorage;
 
+use App\Utils\Database\JsonDatabaseTrait;
 use App\Utils\Jwt\AuthUserResolverInterface;
 use App\Utils\NotRegisteredUsers\NotRegisteredUserIdGeneratorInterface;
 use Carbon\Carbon;
@@ -10,6 +11,8 @@ use SocialTech\StorageInterface;
 
 class SlowAnalyticsStorage implements AnalyticsStorage
 {
+    use JsonDatabaseTrait;
+
     /**
      * @var StorageInterface
      */
@@ -37,6 +40,8 @@ class SlowAnalyticsStorage implements AnalyticsStorage
         $this->storage = $storage;
         $this->authUserResolver = $authUserResolver;
         $this->notRegisteredUserIdGenerator = $notRegisteredUserIdGenerator;
+
+        $this->table = 'analytics';
     }
 
     /**
@@ -51,7 +56,7 @@ class SlowAnalyticsStorage implements AnalyticsStorage
 
         dispatch(new SaveToAnalyticsStorageJob(
             $this->storage,
-            storage_path('analytics/' . $params['id'] . '.json'),
+            $this->getPath($params['id'] . '.json'),
             json_encode($params)
         ));
         $this->setNewItemId($params['id']);
@@ -60,58 +65,14 @@ class SlowAnalyticsStorage implements AnalyticsStorage
     }
 
     /**
-     * @return int
-     */
-    private function getNewItemId(): int
-    {
-        $meta = $this->getMeta();
-        return (int)$meta['next_id'];
-    }
-
-    /**
-     * @param int $lastSavedId
-     */
-    private function setNewItemId(int $lastSavedId): void
-    {
-        $meta = $this->getMeta();
-        $meta['next_id'] = $lastSavedId + 1;
-
-        $this->saveMeta($meta);
-    }
-
-    /**
-     * @return array
-     */
-    private function getMeta(): array
-    {
-        try {
-            return json_decode($this->storage->load(storage_path('analytics/meta.json')), true);
-        } catch (\RuntimeException $exception) {
-            return $this->generateInitialMeta();
-        }
-    }
-
-    /**
-     * @return array
-     */
-    private function generateInitialMeta(): array
-    {
-        $meta = [
-            'next_id' => 1,
-        ];
-
-        return $meta;
-    }
-
-    /**
      * @param array $meta
      * @return void
      */
-    private function saveMeta(array $meta): void
+    protected function saveMeta(array $meta): void
     {
         dispatch(new SaveToAnalyticsStorageJob(
             $this->storage,
-            storage_path('analytics/meta.json'),
+            $this->getPath('meta.json'),
             json_encode($meta)
         ));
     }

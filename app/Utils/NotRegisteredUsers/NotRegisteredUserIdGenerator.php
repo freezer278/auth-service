@@ -27,8 +27,9 @@ class NotRegisteredUserIdGenerator implements NotRegisteredUserIdGeneratorInterf
      */
     private function getDataFromStorage(): array
     {
-        $contents = json_decode(file_get_contents(storage_path('users/not_registered.json')), true);
-        if (!$contents) {
+        try {
+            $contents = json_decode(file_get_contents(storage_path('users/not_registered.json')), true);
+        } catch (\Exception $e) {
             $contents = [
                 'new_id' => -1,
             ];

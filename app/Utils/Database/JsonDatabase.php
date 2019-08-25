@@ -6,10 +6,7 @@ namespace App\Utils\Database;
 
 class JsonDatabase implements Database
 {
-    /**
-     * @var string
-     */
-    private $table;
+    use JsonDatabaseTrait;
 
     /**
      * @param string $tableName
@@ -29,7 +26,7 @@ class JsonDatabase implements Database
     {
         // TODO: add exception when table not set
 
-        $data['id'] = $this->getNewId();
+        $data['id'] = $this->getNewItemId();
 
         $dbData = $this->getDbContents();
         $dbData[$data['id']] = $data;
@@ -38,59 +35,6 @@ class JsonDatabase implements Database
         $this->setNewItemId($data['id']);
 
         return $data;
-    }
-
-    /**
-     * @return int
-     */
-    private function getNewId(): int
-    {
-        $meta = $this->getMeta();
-        return (int)$meta['next_id'];
-    }
-
-    /**
-     * @param int $lastSavedId
-     */
-    private function setNewItemId(int $lastSavedId): void
-    {
-        $meta = $this->getMeta();
-        $meta['next_id'] = $lastSavedId + 1;
-
-        $this->saveMeta($meta);
-    }
-
-    /**
-     * @return array
-     */
-    private function getMeta(): array
-    {
-        try {
-            return json_decode(file_get_contents($this->getPath('meta.json')), true);
-        } catch (\Exception $exception) {
-            return $this->generateInitialMeta();
-        }
-    }
-
-    /**
-     * @return array
-     */
-    private function generateInitialMeta(): array
-    {
-        $meta = [
-            'next_id' => 1,
-        ];
-
-        return $meta;
-    }
-
-    /**
-     * @param array $meta
-     * @return void
-     */
-    private function saveMeta(array $meta): void
-    {
-        file_put_contents($this->getPath('meta.json'), json_encode($meta));
     }
 
     /**
@@ -115,6 +59,8 @@ class JsonDatabase implements Database
      */
     private function searchById($value): ?array
     {
+        // TODO: add exception when table not set
+
         $contents = $this->getDbContents();
         return $contents[$value] ?? null;
     }
@@ -153,20 +99,5 @@ class JsonDatabase implements Database
         }
 
         return $dbData;
-    }
-
-    /**
-     * @param string $fileName
-     * @return string
-     */
-    private function getPath(string $fileName): string
-    {
-        $folderPath = storage_path($this->table);
-
-        if (!file_exists($folderPath)) {
-            mkdir($folderPath);
-        }
-
-        return $folderPath . '/' . $fileName;
     }
 }

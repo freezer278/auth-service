@@ -14,6 +14,8 @@ use App\Utils\Jwt\AuthUserResolver;
 use App\Utils\Jwt\AuthUserResolverInterface;
 use App\Utils\Jwt\UserTokenFactory;
 use App\Utils\Jwt\UserTokenFactoryInterface;
+use App\Utils\NotRegisteredUsers\NotRegisteredUserIdGenerator;
+use App\Utils\NotRegisteredUsers\NotRegisteredUserIdGeneratorInterface;
 use Illuminate\Support\ServiceProvider;
 use SocialTech\SlowStorage;
 use SocialTech\StorageInterface;
@@ -34,5 +36,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserTokenFactoryInterface::class, UserTokenFactory::class);
         $this->app->bind(TokenMapperInterface::class, TokenMapper::class);
         $this->app->bind(AuthUserResolverInterface::class, AuthUserResolver::class);
+        $this->app->bind(NotRegisteredUserIdGeneratorInterface::class, NotRegisteredUserIdGenerator::class);
     }
 }

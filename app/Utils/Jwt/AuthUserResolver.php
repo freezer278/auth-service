@@ -75,7 +75,7 @@ class AuthUserResolver implements AuthUserResolverInterface
     private function getUserIdFromRequest(): ?int
     {
         $token = $this->getTokenFromRequest();
-        return $token->getClaim('sub');
+        return $token ? $token->getClaim('sub') : null;
     }
 
     /**
