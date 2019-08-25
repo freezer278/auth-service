@@ -3,7 +3,6 @@
 
 namespace App\DataMappers\User;
 
-use App\Exceptions\ModelNotFoundException;
 use App\Models\UserInterface;
 
 interface UserMapperInterface

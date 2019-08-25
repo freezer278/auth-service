@@ -4,7 +4,6 @@
 namespace App\DataMappers\User;
 
 
-use App\Exceptions\ModelNotFoundException;
 use App\Models\User;
 use App\Models\UserInterface;
 use App\Utils\Database\Database;

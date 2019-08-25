@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\DataMappers\User\UserMapperInterface;
-use App\Exceptions\ModelNotFoundException;
 use App\Models\UserInterface;
 use App\Utils\Jwt\UserTokenFactoryInterface;
 use Illuminate\Http\JsonResponse;
