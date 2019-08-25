@@ -1,8 +1,3 @@
-#!/usr/bin/env php
-<?php
+#!/bin/bash
 
-while (true)
-{
-    echo "hello!\n";
-    sleep(5);
-}
+php artisan queue:work --tries=3
