@@ -8,11 +8,11 @@ Also track events to external analytic service.
 [windows](https://docs.docker.com/docker-for-windows/)
 ) with 
 [docker-compose](https://docs.docker.com/compose/install/)
-- make sure that **80** port in **127.0.0.1** interface is free
+- make sure that **8000** port in **127.0.0.1** interface is free
 - in the project dir run the next commands:
 ```bash
 docker-compose up -d
-open http://localhost
+open http://localhost:8000
 ```
 
 ### Install vendors
@@ -34,7 +34,3 @@ docker-compose up -d --force-recreate
 ```bash
 ./test
 ```
-
-### RabbitMQ management
-[http://localhost:15672/](http://localhost:15672/) **[guest:guest]**
-
