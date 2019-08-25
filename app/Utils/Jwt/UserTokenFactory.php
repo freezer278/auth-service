@@ -54,7 +54,7 @@ class UserTokenFactory implements UserTokenFactoryInterface
             ->permittedFor(url('/'))
             ->identifiedBy($id, true)
             ->issuedAt($time)
-            ->canOnlyBeUsedAfter($time + 60)
+            ->canOnlyBeUsedAfter($time)
             ->expiresAt($expiresAt)
             ->withClaim('sub', $user->getId())
             ->getToken($this->signer, new Key($this->getSignKey()));
@@ -91,7 +91,7 @@ class UserTokenFactory implements UserTokenFactoryInterface
      * @return string
      */
     public function getSignKey(): string
-    {
+        {
         return env('JWT_KEY', '23uu9ujfdiosu98fu4390923');
     }
 }

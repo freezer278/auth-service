@@ -10,6 +10,8 @@ use App\Utils\AnalyticsStorage\AnalyticsStorage;
 use App\Utils\AnalyticsStorage\SlowAnalyticsStorage;
 use App\Utils\Database\Database;
 use App\Utils\Database\JsonDatabase;
+use App\Utils\Jwt\AuthUserResolver;
+use App\Utils\Jwt\AuthUserResolverInterface;
 use App\Utils\Jwt\UserTokenFactory;
 use App\Utils\Jwt\UserTokenFactoryInterface;
 use Illuminate\Support\ServiceProvider;
@@ -31,5 +33,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(Database::class, JsonDatabase::class);
         $this->app->bind(UserTokenFactoryInterface::class, UserTokenFactory::class);
         $this->app->bind(TokenMapperInterface::class, TokenMapper::class);
+        $this->app->bind(AuthUserResolverInterface::class, AuthUserResolver::class);
     }
 }

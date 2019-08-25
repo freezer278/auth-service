@@ -3,6 +3,7 @@
 
 namespace App\Utils\AnalyticsStorage;
 
+use App\Utils\Jwt\AuthUserResolverInterface;
 use Carbon\Carbon;
 use SocialTech\StorageInterface;
 
@@ -12,14 +13,20 @@ class SlowAnalyticsStorage implements AnalyticsStorage
      * @var StorageInterface
      */
     private $storage;
+    /**
+     * @var AuthUserResolverInterface
+     */
+    private $authUserResolver;
 
     /**
      * SlowAnalyticsStorage constructor.
      * @param StorageInterface $storage
+     * @param AuthUserResolverInterface $authUserResolver
      */
-    public function __construct(StorageInterface $storage)
+    public function __construct(StorageInterface $storage, AuthUserResolverInterface $authUserResolver)
     {
         $this->storage = $storage;
+        $this->authUserResolver = $authUserResolver;
     }
 
     /**
@@ -104,8 +111,7 @@ class SlowAnalyticsStorage implements AnalyticsStorage
      */
     private function getCurrentUserId(): ?int
     {
-        // todo: add here logic for getting current user id
-        return null;
+        return $this->authUserResolver->getId();
     }
 
     /**
