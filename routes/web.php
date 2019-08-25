@@ -17,3 +17,4 @@ $router->get('/', function () use ($router) {
 
 
 $router->post('/analytics/save_record', 'AnalyticsController@saveRecord');
+$router->post('/register', 'RegisterController@register');
