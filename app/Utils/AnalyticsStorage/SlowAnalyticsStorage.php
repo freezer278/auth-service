@@ -3,9 +3,7 @@
 
 namespace App\Utils\AnalyticsStorage;
 
-
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use SocialTech\StorageInterface;
 
 class SlowAnalyticsStorage implements AnalyticsStorage
@@ -34,8 +32,11 @@ class SlowAnalyticsStorage implements AnalyticsStorage
         $params['id_user'] = $params['id_user'] ?? $this->getCurrentUserId() ?? $this->getNotAuthenticatedUserId();
         $params['date_created'] = Carbon::now()->toDateTimeString();
 
-//        todo: make store work in queue
-        $this->storage->store(storage_path('analytics/' . $params['id'] . '.json'), json_encode($params));
+        dispatch(new SaveToAnalyticsStorageJob(
+            $this->storage,
+            storage_path('analytics/' . $params['id'] . '.json'),
+            json_encode($params)
+        ));
         $this->setNewItemId($params['id']);
 
         return $params;
@@ -91,7 +92,11 @@ class SlowAnalyticsStorage implements AnalyticsStorage
      */
     private function saveMeta(array $meta): void
     {
-        $this->storage->store(storage_path('analytics/meta.json'), json_encode($meta));
+        dispatch(new SaveToAnalyticsStorageJob(
+            $this->storage,
+            storage_path('analytics/meta.json'),
+            json_encode($meta)
+        ));
     }
 
     /**
