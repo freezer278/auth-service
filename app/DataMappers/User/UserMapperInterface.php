@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\DataMappers;
+namespace App\DataMappers\User;
 
 use App\Exceptions\ModelNotFoundException;
 use App\Models\UserInterface;

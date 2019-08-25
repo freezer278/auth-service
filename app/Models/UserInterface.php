@@ -34,5 +34,5 @@ interface UserInterface
     /**
      * @return string
      */
-    public function getHashedPassword(): string;
+    public function getPassword(): string;
 }
