@@ -31,9 +31,10 @@ class SlowAnalyticsStorage implements AnalyticsStorage
     public function create(array $params): array
     {
         $params['id'] = $this->getNewItemId();
-        $params['id_user'] = $params['id_user'] ?? Auth::id() ?? $this->getNotAuthenticatedUserId();
+        $params['id_user'] = $params['id_user'] ?? $this->getCurrentUserId() ?? $this->getNotAuthenticatedUserId();
         $params['date_created'] = Carbon::now()->toDateTimeString();
 
+//        todo: make store work in queue
         $this->storage->store(storage_path('analytics/' . $params['id'] . '.json'), json_encode($params));
         $this->setNewItemId($params['id']);
 
@@ -66,7 +67,7 @@ class SlowAnalyticsStorage implements AnalyticsStorage
     private function getMeta(): array
     {
         try {
-            return json_decode($this->storage->load('analytics/meta.json'));
+            return json_decode($this->storage->load(storage_path('analytics/meta.json')), true);
         } catch (\RuntimeException $exception) {
             return $this->generateInitialMeta();
         }
@@ -81,8 +82,6 @@ class SlowAnalyticsStorage implements AnalyticsStorage
             'next_id' => 1,
         ];
 
-        $this->saveMeta($meta);
-
         return $meta;
     }
 
@@ -92,7 +91,16 @@ class SlowAnalyticsStorage implements AnalyticsStorage
      */
     private function saveMeta(array $meta): void
     {
-        $this->storage->store('analytics/meta.json', json_encode($meta));
+        $this->storage->store(storage_path('analytics/meta.json'), json_encode($meta));
+    }
+
+    /**
+     * @return int
+     */
+    private function getCurrentUserId(): ?int
+    {
+        // todo: add here logic for getting current user id
+        return null;
     }
 
     /**

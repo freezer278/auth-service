@@ -32,9 +32,10 @@ class AnalyticsController extends Controller
     {
         $this->validate($request, [
             'source_label' => 'required|string',
+            'id_user' => 'nullable|integer',
         ]);
 
-        $item = $this->analyticsStorage->create($request->only('source_label'));
+        $item = $this->analyticsStorage->create($request->only('source_label', 'id_user'));
 
         return response()->json($item);
     }
