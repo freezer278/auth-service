@@ -4,6 +4,7 @@
 namespace App\Utils\AnalyticsStorage;
 
 use App\Utils\Jwt\AuthUserResolverInterface;
+use App\Utils\NotRegisteredUsers\NotRegisteredUserIdGeneratorInterface;
 use Carbon\Carbon;
 use SocialTech\StorageInterface;
 
@@ -17,16 +18,25 @@ class SlowAnalyticsStorage implements AnalyticsStorage
      * @var AuthUserResolverInterface
      */
     private $authUserResolver;
+    /**
+     * @var NotRegisteredUserIdGeneratorInterface
+     */
+    private $notRegisteredUserIdGenerator;
 
     /**
      * SlowAnalyticsStorage constructor.
      * @param StorageInterface $storage
      * @param AuthUserResolverInterface $authUserResolver
+     * @param NotRegisteredUserIdGeneratorInterface $notRegisteredUserIdGenerator
      */
-    public function __construct(StorageInterface $storage, AuthUserResolverInterface $authUserResolver)
-    {
+    public function __construct(
+        StorageInterface $storage,
+        AuthUserResolverInterface $authUserResolver,
+        NotRegisteredUserIdGeneratorInterface $notRegisteredUserIdGenerator
+    ) {
         $this->storage = $storage;
         $this->authUserResolver = $authUserResolver;
+        $this->notRegisteredUserIdGenerator = $notRegisteredUserIdGenerator;
     }
 
     /**
@@ -119,7 +129,6 @@ class SlowAnalyticsStorage implements AnalyticsStorage
      */
     private function getNotAuthenticatedUserId(): int
     {
-        // todo: add here logic for getting unique user id
-        return -1;
+        return $this->notRegisteredUserIdGenerator->getUniqueId();
     }
 }

@@ -4,8 +4,6 @@
 namespace App\Utils\Database;
 
 
-use App\Utils\AnalyticsStorage\SaveToAnalyticsStorageJob;
-
 class JsonDatabase implements Database
 {
     /**
