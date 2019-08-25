@@ -35,4 +35,9 @@ interface UserInterface
      * @return string
      */
     public function getPassword(): string;
+
+    /**
+     * @return array
+     */
+    public function toArray(): array;
 }

@@ -7,9 +7,23 @@ namespace App\DataMappers\User;
 use App\Exceptions\ModelNotFoundException;
 use App\Models\User;
 use App\Models\UserInterface;
+use App\Utils\Database\Database;
 
 class UserMapper implements UserMapperInterface
 {
+    /**
+     * @var Database
+     */
+    private $database;
+
+    /**
+     * UserMapper constructor.
+     * @param Database $database]
+     */
+    public function __construct(Database $database)
+    {
+        $this->database = $database->useTable('users');
+    }
 
     /**
      * @param int $id
@@ -18,7 +32,13 @@ class UserMapper implements UserMapperInterface
      */
     public function findById(int $id): UserInterface
     {
-        // TODO: Implement findById() method.
+        $result = $this->database->findByField('id', $id);
+
+        if (!$result) {
+            throw new ModelNotFoundException();
+        }
+
+        return $this->mapSingleEntity($result);
     }
 
     /**
@@ -28,7 +48,13 @@ class UserMapper implements UserMapperInterface
      */
     public function findByNickname(string $nickname): UserInterface
     {
-        // TODO: Implement findByNickname() method.
+        $result = $this->database->findByField('nickname', $nickname);
+
+        if (!$result) {
+            throw new ModelNotFoundException();
+        }
+
+        return $this->mapSingleEntity($result);
     }
 
     /**
@@ -37,7 +63,7 @@ class UserMapper implements UserMapperInterface
      */
     public function create(UserInterface $user): UserInterface
     {
-        // TODO: Implement create() method.
+        return $this->mapSingleEntity($this->database->create($user->toArray()));
     }
 
     /**

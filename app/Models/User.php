@@ -9,29 +9,9 @@ use InvalidArgumentException;
 class User implements UserInterface
 {
     /**
-     * @var int|null
+     * @var array
      */
-    private $id;
-    /**
-     * @var string
-     */
-    private $firstname;
-    /**
-     * @var string
-     */
-    private $lastname;
-    /**
-     * @var string
-     */
-    private $nickname;
-    /**
-     * @var int
-     */
-    private $age;
-    /**
-     * @var string
-     */
-    private $password;
+    private $data;
 
     /**
      * User constructor.
@@ -39,12 +19,7 @@ class User implements UserInterface
      */
     public function __construct(array $data)
     {
-        $this->id = $data['id'] ?? null;
-        $this->firstname = $data['firstname'] ?? '';
-        $this->lastname = $data['lastname'] ?? '';
-        $this->nickname = $data['nickname'];
-        $this->age = $data['age'] ?? null;
-        $this->password = $data['password'] ?? null;
+        $this->data = $data;
     }
 
     /**
@@ -52,7 +27,7 @@ class User implements UserInterface
      */
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->data['id'];
     }
 
     /**
@@ -60,7 +35,7 @@ class User implements UserInterface
      */
     public function getFirstName(): string
     {
-        return $this->firstname;
+        return $this->data['firstname'];
     }
 
     /**
@@ -68,7 +43,7 @@ class User implements UserInterface
      */
     public function getLastName(): string
     {
-        return $this->lastname;
+        return $this->data['lastname'];
     }
 
     /**
@@ -76,7 +51,7 @@ class User implements UserInterface
      */
     public function getNickname(): string
     {
-        return $this->nickname;
+        return $this->data['nickname'];
     }
 
     /**
@@ -84,7 +59,7 @@ class User implements UserInterface
      */
     public function getAge(): int
     {
-        return $this->age;
+        return $this->data['age'];
     }
 
     /**
@@ -92,6 +67,14 @@ class User implements UserInterface
      */
     public function getPassword(): string
     {
-        return $this->password;
+        return $this->data['password'];
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return $this->data;
     }
 }
